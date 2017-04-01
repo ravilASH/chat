@@ -1,7 +1,9 @@
 <?php
 
+Yii::setAlias('@tests', dirname(__DIR__) . '/tests/codeception');
+
 $params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
+$local = require(__DIR__ . '/local.php');
 
 $config = [
     'id' => 'basic-console',
@@ -20,16 +22,11 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => $local['db'],
+        'mailer' => $local['mailer']
     ],
     'params' => $params,
-    /*
-    'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
-        ],
-    ],
-    */
+
 ];
 
 if (YII_ENV_DEV) {

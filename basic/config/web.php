@@ -1,33 +1,57 @@
 <?php
-
 $params = require(__DIR__ . '/params.php');
+$local = require(__DIR__ . '/local.php');
+
+if (!$local || !$local['db'] || !$local['mailer'] || !isset($local['developEnv'])) {
+    echo 'Не найден или не заполнен файл локальных настроке config/local.php';
+    die();
+}
+
+$local = require(__DIR__ . '/local.php');
+
+if (!$local || !$local['db'] || !$local['mailer'] || !isset($local['developEnv'])) {
+    echo 'Не найден или не заполнен файл локальных настроке config/local.php';
+    die();
+}
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'controllerMap' => [
+        'build-rest-doc' => [
+            'sourceDirs' => [
+                '@app/controllers',   // <-- path to your API controllers
+            ],
+            'template' => '//restdoc/restdoc.twig',
+            'class' => 'pahanini\restdoc\controllers\BuildController',
+            'sortProperty' => 'shortDescription', // <-- default value (how controllers will be sorted)
+            'targetFile' => 'path/to/nice-documentation.html'
+        ],
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '-GKKukVfhK-GTDCOeHImGok-fdhOrOiU',
+            'cookieValidationKey' => 'Z1VZEsWXq-MII311-z3sM45f64Pb0XGG',
+            'enableCsrfValidation'=>false,
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
+
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
+            'enableSession' => false,
+            'loginUrl' => null
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
+        'mailer' => $local['mailer'],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -37,34 +61,30 @@ $config = [
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
-        /*
+        'db' => $local['db'],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['member', 'tag', 'event']],
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
 
-if (YII_ENV_DEV) {
+if ($local['developEnv']) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['*'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['*'],
     ];
 }
-
 return $config;
