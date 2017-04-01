@@ -66,7 +66,16 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => ['member', 'tag', 'event']],
+                'OPTIONS <url:(.*)>' => 'base-rest/options',
+                '<controller:[\w\-]+>/<action:[\w\-]+>/<id:\d+>' => '<controller>/<action>',
+                [
+                   'class' => 'yii\rest\UrlRule',
+                    'pluralize' => false,
+                    'controller' => [
+                        'user',
+
+                    ]
+                 ],
             ],
         ],
     ],
