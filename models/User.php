@@ -72,15 +72,12 @@ class User extends \yii\db\ActiveRecord
         ];
     }
 
-    public function beforeSave($insert)
+    public function beforeValidate()
     {
-        if (parent::beforeSave($insert)){
-            if ($insert){
-                $this->auth_key = \Yii::$app->security->generateRandomString();
-            }
-            return true;
-        }else{
-            return false;
+        if (empty($this->auth_key)) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
         }
+        return parent::beforeValidate();
     }
+
 }
