@@ -13,6 +13,8 @@ use yii\rest\Controller;
 
 class BaseRestController extends Controller
 {
+    public $serializer = 'app\components\Serializer';
+
     public function init()
     {
         parent::init();

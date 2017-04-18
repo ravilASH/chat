@@ -49,6 +49,16 @@ class User extends \yii\db\ActiveRecord
         ];
     }
 
+    public function restFields() {
+
+        $restFields = self::fields();
+        unset($restFields['auth_key']);
+        unset($restFields['objectsid']);
+        unset($restFields['password']);
+        unset($restFields['objectguid']);
+        return $restFields;
+    }
+
     /**
      * @inheritdoc
      */
