@@ -163,4 +163,6 @@ class Chat extends \yii\db\ActiveRecord
         }
         parent::afterSave($insert, $changedAttributes);
     }
+
+    //todo продумать удаление чата
 }
