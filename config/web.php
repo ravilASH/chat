@@ -73,7 +73,8 @@ $config = [
                     'pluralize' => false,
                     'controller' => [
                         'user',
-
+                        'message',
+                        'chat'
                     ]
                  ],
             ],
