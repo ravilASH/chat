@@ -19,4 +19,6 @@ class ChatController extends BaseActiveController
         unset($actions['update'], $actions['delete']);
         return $actions;
     }
+
+    // todo дописать получние только своих чатов
 }

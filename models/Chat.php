@@ -54,6 +54,8 @@ class Chat extends \yii\db\ActiveRecord
     {
         $fields = parent::fields();
         $fields[]= 'userIds';
+        $fields[] = 'users';
+        $fields[] = 'lastMessages';
         return $fields;
     }
 
