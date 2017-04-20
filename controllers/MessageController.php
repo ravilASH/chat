@@ -8,7 +8,7 @@
 
 namespace app\controllers;
 
-
+use app\components\behaviors\PushBehavior;
 
 class MessageController extends BaseActiveController
 {
@@ -18,5 +18,12 @@ class MessageController extends BaseActiveController
         $actions = parent::actions();
         unset($actions['update'], $actions['delete']);
         return $actions;
+    }
+
+    public function init(){
+        $component = \Yii::$app->response;
+        $component->attachBehavior('PushBehavior', [
+            'class' => PushBehavior::className(),
+        ]);
     }
 }
