@@ -19,7 +19,7 @@ use yii\db\Query;
  *
  * @property Chat $chat
  */
-class Message extends \yii\db\ActiveRecord
+class Message extends BaseModel
 {
     /**
      * @inheritdoc
@@ -53,6 +53,14 @@ class Message extends \yii\db\ActiveRecord
             'chat_id' => 'Chat ID',
             'date_create' => 'Date Create',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields()
+    {
+        return ['chat'];
     }
 
     /**

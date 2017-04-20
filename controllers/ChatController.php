@@ -17,6 +17,11 @@ class ChatController extends BaseActiveController
     public function actions() {
         $actions = parent::actions();
         unset($actions['update'], $actions['delete']);
+        $actions['post-message'] = [
+            'class' => 'app\components\CreateAndReturnParentAction',
+            'modelClass' => 'app\models\Message',
+            'parentRelationName' => 'chat',
+        ];
         return $actions;
     }
 

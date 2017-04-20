@@ -107,7 +107,7 @@ class Chat extends BaseModel
      */
     public function getLastMessages()
     {
-        return $this->hasMany(Message::className(), ['chat_id' => 'id']);
+        return $this->hasMany(Message::className(), ['chat_id' => 'id'])->orderBy('date_create DESC');
     }
 
     public function beforeSave($insert)
@@ -133,7 +133,6 @@ class Chat extends BaseModel
 
     public function afterSave($insert, $changedAttributes)
     {
-
         // после создания чата связываем его с пользователями
         $otherUserIds = $this->_userIds;
         if (!$otherUsers = User::findAll(['id' => $otherUserIds])) {
