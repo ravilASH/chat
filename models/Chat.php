@@ -18,10 +18,11 @@ use yii\base\Exception;
  * @property Message[] $lastMessages
  * @property array $usersIds
  */
-class Chat extends \yii\db\ActiveRecord
+class Chat extends BaseModel
 {
     /**
-     * Получаемое с фронта сущность чата
+     * Получаемый с фронта перечень айдишников  пользователей при его создании
+     * todo переделать на получение моделек пользователей? согласовать с фронтом
      * @var null|array
      */
     public $_userIds = null;
