@@ -60,6 +60,13 @@ class Chat extends BaseModel
         return $fields;
     }
 
+    public function defaultRestFields()
+    {
+        $restFields = parent::defaultRestFields();
+        $restFields[] = 'users';
+        return $restFields;
+    }
+
     /**
      * @inheritdoc
      */

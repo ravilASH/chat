@@ -14,6 +14,7 @@ use yii\base\Arrayable;
 use yii\base\Model;
 use yii\data\DataProviderInterface;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 class Serializer extends \yii\rest\Serializer
 {
@@ -43,9 +44,11 @@ class Serializer extends \yii\rest\Serializer
      */
     protected function serializeModels(array $models)
     {
-        list ($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
-            if ($model instanceof Arrayable) {
+            if ($model instanceof RestSerializable) {
+                $models[$i] = $model->toRestArray();
+            }elseif ($model instanceof Arrayable) {
+                list ($fields, $expand) = $this->getRequestedFields();
                 $models[$i] = $model->toArray($fields, $expand);
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);

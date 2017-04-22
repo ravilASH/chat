@@ -9,10 +9,13 @@
 namespace app\models;
 
 
+use app\components\RestSerializable;
+use app\components\ToRestArrayTrait;
 use yii\db\ActiveRecord;
 
-class BaseModel extends ActiveRecord
+class BaseModel extends ActiveRecord implements RestSerializable
 {
+    use ToRestArrayTrait;
     /**
      * @inheritdoc
      */

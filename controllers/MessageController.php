@@ -20,10 +20,18 @@ class MessageController extends BaseActiveController
         return $actions;
     }
 
-    public function init(){
-        $component = \Yii::$app->response;
-        $component->attachBehavior('PushBehavior', [
-            'class' => PushBehavior::className(),
-        ]);
+    public function beforeAction($action){
+        if (parent::beforeAction($action)) {
+            if ($action->id == 'create') {
+                $component = \Yii::$app->response;
+                $component->attachBehavior('PushBehavior', [
+                    'class' => PushBehavior::className(),
+                ]);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
