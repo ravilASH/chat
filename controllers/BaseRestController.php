@@ -19,7 +19,7 @@ class BaseRestController extends Controller
         \Yii::$app->response
             ->headers->add("Access-Control-Allow-Origin", "*")
             ->add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-            ->add('Access-Control-Allow-Headers', 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent');
+            ->add('Access-Control-Allow-Headers', 'X-Token,Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent');
     }
 
     public function actionOptions()
