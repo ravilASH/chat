@@ -13,6 +13,7 @@ use yii\rest\ActiveController;
 
 class BaseActiveController extends ActiveController
 {
+    public $serializer = 'app\components\Serializer';
 
     public function init()
     {
