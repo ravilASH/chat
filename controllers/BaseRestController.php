@@ -16,15 +16,19 @@ class BaseRestController extends Controller
     public $serializer = 'app\components\Serializer';
 
     /**
-     * Serializes the specified data.
-     * The default implementation will create a serializer based on the configuration given by [[serializer]].
-     * It then uses the serializer to serialize the given data.
-     * @param mixed $data the data to be serialized
-     * @return mixed the serialized data.
+     * Массив полей для проброса в сериализатор
+     * @var array
+     */
+    public $configuratedFields = [];
+
+    /**
+     * @inheritdoc
      */
     protected function serializeData($data)
     {
-        return \Yii::createObject($this->serializer)->serialize($data);
+        $serializer = \Yii::createObject($this->serializer);
+        $serializer->configuratedFields = $this->configuratedFields;
+        return $serializer->serialize($data);
     }
 
     public function init()
