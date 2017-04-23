@@ -39,7 +39,7 @@ class UserController extends BaseActiveController
             throw new UserException('Укажите логин и пароль');
         }
 
-        if ($login = '111' && $pass = '111') {
+        if ($login == '111' && $pass == '111') {
             $userData = (User::findOne(['displayname' => 'Шаменов Равиль Абдэлганиевич']))->attributes;
         }else{
             $userData = LdapHelper::getUserInfo($login, $pass);
