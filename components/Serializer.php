@@ -46,9 +46,7 @@ class Serializer extends \yii\rest\Serializer
     public $configuratedFields = [];
 
     /**
-     * Serializes a model object.
-     * @param Arrayable $model
-     * @return array the array representation of the model
+     * @inheritdoc
      */
     protected function serializeModel($model)
     {
@@ -63,9 +61,27 @@ class Serializer extends \yii\rest\Serializer
     }
 
     /**
-     * Serializes a set of models.
-     * @param array $models
-     * @return array the array representation of the models
+     * @inheritdoc
+     */
+    protected function serializeModelErrors($model)
+    {
+        $this->response->setStatusCode(422, 'Data Validation Failed.');
+        $errors = [];
+        foreach ($model->getFirstErrors() as $name => $message) {
+            $errors[] = [
+                'field' => $name,
+                'message' => $message,
+            ];
+        }
+
+        $modelData = $this->serializeModel($model);
+        $modelData['errors'] = $errors;
+        return $modelData;
+    }
+
+    /**
+     * Обработка  так же и особых сериализуемых моделек
+     * @inheritdoc
      */
     protected function serializeModels(array $models)
     {
