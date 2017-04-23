@@ -52,8 +52,6 @@ class RestArrayHelper extends BaseArrayHelper
      */
     public static function toArray($object, $properties = [], $recursive = true)
     {
-        // todo сделать отбрасывание верхнего уровня конфига
-        // и проброс нижележашей части в дальнейшем рекурсивном использовании в массивах и нижележащих моделей
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
@@ -81,7 +79,7 @@ class RestArrayHelper extends BaseArrayHelper
                 }
             }
             if ($object instanceof RestSerializable) {
-                $result = $object->toRestArray();
+                $result = $object->toRestArray($properties);
             }elseif ($object instanceof Arrayable) {
                 // todo если поля определены то отдать только эти поля
                 $result = $object->toArray([], [], $recursive);

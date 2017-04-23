@@ -18,7 +18,20 @@ trait ToRestArrayTrait
 {
 
     /**
-     * Поля для рест-сериализатора, приоритетны перед дефолтными, могут содержать поля вложенных сущностей
+     * Поля для рест-сериализатора, приоритетны перед дефолтными и конфигурацией сериалайзера,
+     * не могут содержать поля вложенных сущностей
+     *
+     * формат
+     *    [
+     *        'field1',
+     *        'field2' => 'type'
+     *        'field3' => function ($model) {
+     *             $model->getType();
+     *         }
+     *    ]
+     *
+     * можно предусмотреть не только предусмотренные в дефолтный но ои другие поля, в тч со значениями
+     *
      * @var array
      */
     public $configuratedRestFields = [];
@@ -38,10 +51,10 @@ trait ToRestArrayTrait
      * @param bool $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
-    public function toRestArray($recursive = true)
+    public function toRestArray($configFields = [], $recursive = true)
     {
         $data = [];
-        foreach ($this->resolveRestFields() as $field => $definition) {
+        foreach ($this->resolveRestFields($configFields) as $field => $definition) {
             $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
         }
 
@@ -49,21 +62,31 @@ trait ToRestArrayTrait
             $data['_links'] = Link::serialize($this->getLinks());
         }
 
-        return $recursive ? RestArrayHelper::toArray($data) : $data;
+        return $recursive ? RestArrayHelper::toArray($data, $configFields) : $data;
     }
 
     /**
      * Определяет какие поля должны быть представлены клиенту (конфигурирование)
      * @return array the list of fields to be exported.
      */
-    protected function resolveRestFields()
+    protected function resolveRestFields($configFields = [])
     {
         $result = [];
+        $type = isset($this->type) ? $this->type : null;
 
-        if ( empty($this->configuratedRestFields ) ) {
-            $listOfFields =  $this->defaultRestFields();
-        }else{
+        if ( !empty($this->configuratedRestFields ) ) {
+            // либо конфигурация в модели
             $listOfFields = $this->configuratedRestFields;
+        }elseif (
+            !empty ($configFields)
+            && is_string($type)
+            && isset($configFields[$type])
+        ){
+            // либо в сериализаторе
+            $listOfFields = $configFields[$type];
+        }else{
+            // или дефолтная конфигурация
+            $listOfFields =  $this->defaultRestFields();
         }
         foreach ($listOfFields as $field => $definition) {
             if (is_int($field)) {

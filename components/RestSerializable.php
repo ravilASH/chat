@@ -21,5 +21,5 @@ interface RestSerializable
      * Возвращает массив из текущей модели с учетом полей для реста и
      * @return array
      */
-    public function toRestArray();
+    public function toRestArray($configFields = [], $recursive = true);
 }

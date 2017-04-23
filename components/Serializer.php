@@ -23,6 +23,29 @@ class Serializer extends \yii\rest\Serializer
     public $fieldsParam = 'only_fields';
 
     /**
+     * конфигурация полей для каждой  сущности запроса (применяется если нет в модели своей конфигурации)
+     * при пустом параметре и пустом конфигураторе полей в модели применяются дефолтные поля
+     *
+     * формат
+     * [   'type' =>
+     *    [
+     *        'field1',
+     *        'field2' => 'type'
+     *        'field3' => function ($model) {
+     *             $model->getType();
+     *         }
+     *    ],
+     *    'type2' => ...
+     * }
+     *
+     * можно предусмотреть не только предусмотренные в дефолтный но ои другие поля, в тч со значениями
+     * @see fields
+     *
+     * @var array
+     */
+    public $configuratedFields = [];
+
+    /**
      * Serializes a model object.
      * @param Arrayable $model
      * @return array the array representation of the model
@@ -31,7 +54,9 @@ class Serializer extends \yii\rest\Serializer
     {
         if ($this->request->getIsHead()) {
             return null;
-        } else {
+        }elseif($model instanceof RestSerializable){
+            return $model->toRestArray($this->configuratedFields);
+        }else {
             list ($fields, $expand) = $this->getRequestedFields();
             return $model->toArray($fields, $expand);
         }
@@ -46,8 +71,10 @@ class Serializer extends \yii\rest\Serializer
     {
         foreach ($models as $i => $model) {
             if ($model instanceof RestSerializable) {
-                $models[$i] = $model->toRestArray();
+                // здесь в сериализатор отправляем массив настроек, который будет пробрасываться по рекурсии
+                $models[$i] = $model->toRestArray($this->configuratedFields);
             }elseif ($model instanceof Arrayable) {
+                // todo подумать нужно ли рест-сериализовать модели лежащие внутри обычных моделей
                 list ($fields, $expand) = $this->getRequestedFields();
                 $models[$i] = $model->toArray($fields, $expand);
             } elseif (is_array($model)) {
