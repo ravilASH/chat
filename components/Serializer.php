@@ -9,6 +9,7 @@
 namespace app\components;
 
 
+use app\helpers\RestArrayHelper;
 use phpDocumentor\Reflection\DocBlock\Tags\Link;
 use yii\base\Arrayable;
 use yii\base\Model;
@@ -66,13 +67,7 @@ class Serializer extends \yii\rest\Serializer
     protected function serializeModelErrors($model)
     {
         $this->response->setStatusCode(422, 'Data Validation Failed.');
-        $errors = [];
-        foreach ($model->getFirstErrors() as $name => $message) {
-            $errors[] = [
-                'field' => $name,
-                'message' => $message,
-            ];
-        }
+        $errors =  RestArrayHelper::serializeModelErrors($model);
 
         $modelData = $this->serializeModel($model);
         $modelData['errors'] = $errors;

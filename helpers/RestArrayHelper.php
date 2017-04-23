@@ -97,4 +97,16 @@ class RestArrayHelper extends BaseArrayHelper
         }
     }
 
+    public static function serializeModelErrors ($model) {
+        $errors = [];
+        foreach ($model->getFirstErrors() as $name => $message) {
+            $errors[] = [
+                'field' => $name,
+                'message' => $message,
+            ];
+        }
+
+        return $errors;
+    }
+
 }

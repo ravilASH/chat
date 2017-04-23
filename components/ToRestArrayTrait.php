@@ -62,6 +62,10 @@ trait ToRestArrayTrait
             $data['_links'] = Link::serialize($this->getLinks());
         }
 
+        if ($this->hasErrors()){
+            $data['errors'] = RestArrayHelper::serializeModelErrors($this);
+        }
+
         return $recursive ? RestArrayHelper::toArray($data, $configFields) : $data;
     }
 
