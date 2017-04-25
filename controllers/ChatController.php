@@ -9,7 +9,6 @@
 namespace app\controllers;
 
 
-
 class ChatController extends BaseActiveController
 {
     public $modelClass = 'app\models\Chat';
@@ -18,6 +17,4 @@ class ChatController extends BaseActiveController
         $actions = parent::actions();
         return $actions;
     }
-
-    // todo дописать получние только своих чатов
 }
