@@ -20,11 +20,14 @@ class PushBehavior extends Behavior
     {
         /** @var Response $responseObject */
         $responseObject = $event->sender;
-        \Yii::trace(\GuzzleHttp\json_encode($responseObject->statusCode));
         if ($responseObject->statusCode < 400){
-            $client = new Client();
-            $resp = $client->post(\Yii::$app->params['nodePushUrl'], ['body' => $responseObject->content]);
-            \Yii::trace($resp);
+            try {
+                $client = new Client();
+                $resp = $client->post(\Yii::$app->params['nodePushUrl'], ['body' => $responseObject->content]);
+                \Yii::trace($resp);
+            }catch (\Exception $ex){
+                \Yii::error($ex->getMessage());
+            }
         }
     }
 }
