@@ -47,18 +47,44 @@ class Serializer extends \yii\rest\Serializer
     public $configuratedFields = [];
 
     /**
+     * Тип(ы) моделек встречающихся в конкретном списке моделек (только на этой странице) или тип одной модели
+     * @var array|string
+     */
+    public $dataTypesOrType = [];
+
+    /**
+     * название поля, добавляемого в корень ответа  с указанием всех встречающихся типов либо единственного типа
+     * если не указано, то тогда не добавляется
+     * оно же используется для поиска типов моделек в ответе
+     * @var string | null
+     */
+    public $typeField = 'type';
+
+    protected $linkAndPaginationData = [];
+
+    /**
      * @inheritdoc
      */
     protected function serializeModel($model)
     {
+        $data = null;
         if ($this->request->getIsHead()) {
-            return null;
+            $data = null;
         }elseif($model instanceof RestSerializable){
-            return $model->toRestArray($this->configuratedFields);
+            $data =  $model->toRestArray($this->configuratedFields);
         }else {
             list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
+            $data =  $model->toArray($fields, $expand);
         }
+
+        // наполняем тип модели
+        if (
+            isset ($model[$this->typeField])
+        ){
+            $this->dataTypesOrType = $model[$this->typeField];
+        }
+
+        return $data;
     }
 
     /**
@@ -91,9 +117,77 @@ class Serializer extends \yii\rest\Serializer
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }
+
+            // наполняем массив типами
+            if (
+                isset ($models[$i][$this->typeField])
+                && !in_array($models[$i][$this->typeField], $this->dataTypesOrType)
+            ){
+                $this->dataTypesOrType[] = $models[$i][$this->typeField];
+            }
         }
 
         return $models;
+    }
+
+    /**
+     * Нам нужна только часть родительского без добавления мета информации,
+     * посколькуу добавлять мета инфоррмацию мы будем не только в дата-провайдеры
+     * @inheritdoc
+     */
+    protected function serializeDataProvider($dataProvider)
+    {
+        if ($this->preserveKeys) {
+            $models = $dataProvider->getModels();
+        } else {
+            $models = array_values($dataProvider->getModels());
+        }
+        $models = $this->serializeModels($models);
+
+        if (($pagination = $dataProvider->getPagination()) !== false) {
+            $this->addPaginationHeaders($pagination);
+            $this->paginationData = $this->serializePagination($pagination);
+        }
+
+        return $models;
+    }
+
+    /**
+     * Перенес сюда добавление метадаты (не только при сериализации провайдера)
+     * @inheritdoc
+     */
+    public function serialize($data)
+    {
+        $result = parent::serialize($data);
+
+        if ($this->request->getIsHead()) {
+            return null;
+        } elseif ($this->collectionEnvelope === null) {
+            return $result;
+        } else {
+            $result = [
+                $this->collectionEnvelope => $result,
+            ];
+
+            if ($meta = $this->collectMetaData()) {
+                $result = array_merge($result, $meta);
+            }
+            return $result;
+        }
+
+    }
+
+    protected function collectMetaData () {
+        $meta = [];
+        if ($this->linkAndPaginationData) {
+            $meta = array_merge($meta, $this->linkAndPaginationData);
+        }
+
+        if ($this->typeField) {
+            $meta["_".$this->typeField] = $this->dataTypesOrType;
+        }
+
+        return $meta;
     }
 
 }

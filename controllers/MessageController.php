@@ -24,8 +24,8 @@ class MessageController extends BaseActiveController
         if (parent::beforeAction($action)) {
             if ($action->id == 'create') {
                 $this->configuratedFields = [
-                    'message' => ['id', 'text', 'chat', 'date_create'],
-                    'chat' => ['id', 'users'],
+                    'message' => ['id', 'text', 'chat', 'date_create', 'type'],
+                    'chat' => ['id', 'users', 'type', 'userIds'],
                     'user' => ['id', 'displayname', 'type']
                 ];
 

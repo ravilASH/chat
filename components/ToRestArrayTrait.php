@@ -80,6 +80,7 @@ trait ToRestArrayTrait
 
         if ( !empty($this->configuratedRestFields ) ) {
             // либо конфигурация в модели
+            // todo принудительно добавить type
             $listOfFields = $this->configuratedRestFields;
         }elseif (
             !empty ($configFields)
@@ -87,9 +88,11 @@ trait ToRestArrayTrait
             && isset($configFields[$type])
         ){
             // либо в сериализаторе
+            // todo принудительно добавить type
             $listOfFields = $configFields[$type];
         }else{
             // или дефолтная конфигурация
+            // todo принудительно добавить type
             $listOfFields =  $this->defaultRestFields();
         }
         foreach ($listOfFields as $field => $definition) {
