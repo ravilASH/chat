@@ -82,4 +82,21 @@ class Message extends BaseModel
             return false;
         }
     }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        if ($insert) {
+            $push = new Push();
+            $push->configuratedFields = [
+                'message' => ['id', 'text', 'chat', 'date_create', 'type'],
+                'chat' => ['id', 'users', 'type', 'userIds'],
+                'user' => ['id', 'displayname', 'type']
+            ];
+            $this->refresh();
+            $push->pushTo = $this->chat->userIds;
+            $push->data = $this;
+            Yii::$app->push->add($push);
+        }
+    }
 }

@@ -16,8 +16,10 @@ exports.subscribe = function (req, res, clientId) {
 
 exports.publish = function (message, clientIds) {
     clientIds.forEach(function (clientId) {
-        clients[clientId].forEach(function (res) {
-            res.end(message);
-        });
+        if (clients[clientId] instanceof Array) {
+            clients[clientId].forEach(function (res) {
+                res.end(message);
+            });
+        }
     });
 };

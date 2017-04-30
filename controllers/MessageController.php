@@ -29,6 +29,7 @@ class MessageController extends BaseActiveController
                     'user' => ['id', 'displayname', 'type']
                 ];
 
+                // todo унести в общий конфиг и там его привязать ко всем ответам
                 $component = \Yii::$app->response;
                 $component->attachBehavior('PushBehavior', [
                     'class' => PushBehavior::className(),

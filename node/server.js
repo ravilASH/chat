@@ -21,11 +21,12 @@ http.createServer(function (req, res) {
                     body += (tmp) ? tmp : '';
                 })
                 .on('end', function () {
-                    // здесь надо переделать способ передаци айдишников на более универсальный
                     // todo сделать try - catch и логи
                     bodyParsed = JSON.parse(body);
-                    clientIds = bodyParsed.data.chat.userIds;
-                    chat.publish(body, clientIds);
+                    clientIds = bodyParsed._pushTo;
+                    if(clientIds instanceof Array) {
+                        chat.publish(body, clientIds);
+                    }
                     res.end('ok');
                 });
             break;

@@ -79,6 +79,9 @@ $config = [
                  ],
             ],
         ],
+        'push' => [
+            'class' => 'app\components\PushCollection',
+        ]
     ],
     'params' => $params,
 ];

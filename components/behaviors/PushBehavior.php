@@ -22,13 +22,7 @@ class PushBehavior extends Behavior
         $responseObject = $event->sender;
 
         if ($responseObject->statusCode < 400){
-            try {
-                $client = new Client();
-                $resp = $client->post(\Yii::$app->params['nodePushUrl'], ['body' => $responseObject->content]);
-                \Yii::trace($resp);
-            }catch (\Exception $ex){
-                \Yii::error($ex->getMessage());
-            }
+            \Yii::$app->push->sendAll();
         }
     }
 }
