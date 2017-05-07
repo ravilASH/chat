@@ -13,6 +13,24 @@ use yii\rest\Controller;
 
 class BaseRestController extends Controller
 {
+    public $serializer = 'app\components\Serializer';
+
+    /**
+     * Массив полей для проброса в сериализатор
+     * @var array
+     */
+    public $configuratedFields = [];
+
+    /**
+     * @inheritdoc
+     */
+    protected function serializeData($data)
+    {
+        $serializer = \Yii::createObject($this->serializer);
+        $serializer->configuratedFields = $this->configuratedFields;
+        return $serializer->serialize($data);
+    }
+
     public function init()
     {
         parent::init();

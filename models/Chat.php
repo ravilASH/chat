@@ -17,6 +17,7 @@ use yii\base\Exception;
  * @property User[] $Users
  * @property Message[] $lastMessages
  * @property array $usersIds
+ * @property  User $creatorUser
  */
 class Chat extends BaseModel
 {
@@ -60,6 +61,13 @@ class Chat extends BaseModel
         return $fields;
     }
 
+    public function defaultRestFields()
+    {
+        $restFields = parent::defaultRestFields();
+        $restFields[] = 'users';
+        return $restFields;
+    }
+
     /**
      * @inheritdoc
      */
@@ -91,6 +99,14 @@ class Chat extends BaseModel
             ->viaTable('chat_to_user', ['chat_id' => 'id'])
             ->select('user.id')
             ->column();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatorUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'creator']);
     }
 
     /**

@@ -20,6 +20,7 @@ class PushBehavior extends Behavior
     {
         /** @var Response $responseObject */
         $responseObject = $event->sender;
+
         if ($responseObject->statusCode < 400){
             try {
                 $client = new Client();

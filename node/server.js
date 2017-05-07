@@ -24,7 +24,7 @@ http.createServer(function (req, res) {
                     // здесь надо переделать способ передаци айдишников на более универсальный
                     // todo сделать try - catch и логи
                     bodyParsed = JSON.parse(body);
-                    clientIds = bodyParsed.chat.userIds;
+                    clientIds = bodyParsed.data.chat.userIds;
                     chat.publish(body, clientIds);
                     res.end('ok');
                 });

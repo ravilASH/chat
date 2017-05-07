@@ -22,7 +22,7 @@ use Yii;
  * @property boolean $inactive
  * @property boolean $veryfied
  */
-class User extends \yii\db\ActiveRecord
+class User extends BaseModel
 {
     /**
      * @inheritdoc
@@ -47,6 +47,16 @@ class User extends \yii\db\ActiveRecord
             [['auth_key'], 'string', 'max' => 32],
             [['objectsid'], 'unique'],
         ];
+    }
+
+    public function defaultRestFields() {
+
+        $restFields = parent::defaultRestFields();
+        unset($restFields['auth_key']);
+        unset($restFields['objectsid']);
+        unset($restFields['password']);
+        unset($restFields['objectguid']);
+        return $restFields;
     }
 
     /**
@@ -78,6 +88,11 @@ class User extends \yii\db\ActiveRecord
             $this->auth_key = \Yii::$app->security->generateRandomString();
         }
         return parent::beforeValidate();
+    }
+
+    public function getChats () {
+        return $this->hasMany(Chat::className(), ['id' => 'chat_id'])
+            ->viaTable('chat_to_user', ['user_id' => 'id']);
     }
 
 }

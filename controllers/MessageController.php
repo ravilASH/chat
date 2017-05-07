@@ -20,10 +20,24 @@ class MessageController extends BaseActiveController
         return $actions;
     }
 
-    public function init(){
-        $component = \Yii::$app->response;
-        $component->attachBehavior('PushBehavior', [
-            'class' => PushBehavior::className(),
-        ]);
+    public function beforeAction($action){
+        if (parent::beforeAction($action)) {
+            if ($action->id == 'create') {
+                $this->configuratedFields = [
+                    'message' => ['id', 'text', 'chat', 'date_create', 'type'],
+                    'chat' => ['id', 'users', 'type', 'userIds'],
+                    'user' => ['id', 'displayname', 'type']
+                ];
+
+                $component = \Yii::$app->response;
+                $component->attachBehavior('PushBehavior', [
+                    'class' => PushBehavior::className(),
+                ]);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
