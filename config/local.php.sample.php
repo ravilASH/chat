@@ -14,6 +14,6 @@ return [
         'useFileTransport' => true,
     ],
     'param' => [
-
+        'nodePushUrl' => 'http://localhost:9090/publish'
     ],
 ];
