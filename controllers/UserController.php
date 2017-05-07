@@ -57,10 +57,14 @@ class UserController extends BaseActiveController
         $user->load($userData, '');
 
         $result = $user->save();
+
         if (!$result) {
             \Yii::$app->response->setStatusCode(422);
             return $user->errors;
         }else{
+            $fields = $user->defaultRestFields();
+            $fields[] = 'auth_key';
+            $this->configuratedFields = ['user' => $fields];
             return $user;
         }
 
