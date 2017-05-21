@@ -17,4 +17,20 @@ class ChatController extends BaseActiveController
         $actions = parent::actions();
         return $actions;
     }
+
+    public function beforeAction($action){
+        if (parent::beforeAction($action)) {
+            if ($action->id == 'index') {
+                $this->configuratedFields = [
+                    'chat' => ['id', 'type', 'users'],
+                    'user:app\views\RestUser' => ['id', 'displayname', 'type']
+                ];
+
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -146,7 +146,7 @@ class Serializer extends \yii\rest\Serializer
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);
-            $this->paginationData = $this->serializePagination($pagination);
+            $this->linkAndPaginationData = $this->serializePagination($pagination);
         }
 
         return $models;
